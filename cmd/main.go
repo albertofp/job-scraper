@@ -30,11 +30,14 @@ func main() {
 
 	extensions.RandomUserAgent(c)
 
-	c.Limit(&colly.LimitRule{
+	err := c.Limit(&colly.LimitRule{
 		DomainGlob:  "*indeed.*",
 		Parallelism: 3,
 		RandomDelay: 5 * time.Second,
 	})
+	if err != nil {
+		panic(err)
+	}
 
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL)
@@ -52,5 +55,7 @@ func main() {
 		fmt.Println("Visiting", r.URL)
 	})
 
-	c.Visit("https://de.indeed.com/jobs?q=Software+Engineer&l=berlin&vjk=1a4c986f12787f88")
+	if err := c.Visit("https://de.indeed.com/jobs?q=Software+Engineer&l=berlin&vjk=1a4c986f12787f88"); err != nil {
+		panic(err)
+	}
 }
